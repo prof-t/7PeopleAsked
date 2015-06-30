@@ -117,6 +117,7 @@
 		2AB570BB1AB9448800BE77F4 /* ConnectModeSelectView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2AB570BA1AB9448800BE77F4 /* ConnectModeSelectView.m */; };
 		2AB570BE1AB94D9100BE77F4 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2AB570BC1AB94D9100BE77F4 /* Main.storyboard */; };
 		2AC2A57D1AC5140500EEBC8E /* 7peopleAsked.db in Resources */ = {isa = PBXBuildFile; fileRef = 2AC2A57C1AC5140500EEBC8E /* 7peopleAsked.db */; };
+		B87063931B425D2F009667F2 /* PAAudioPlayerManager.m in Sources */ = {isa = PBXBuildFile; fileRef = B87063921B425D2F009667F2 /* PAAudioPlayerManager.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -261,6 +262,8 @@
 		2AB570BA1AB9448800BE77F4 /* ConnectModeSelectView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConnectModeSelectView.m; sourceTree = "<group>"; };
 		2AB570BD1AB94D9100BE77F4 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		2AC2A57C1AC5140500EEBC8E /* 7peopleAsked.db */ = {isa = PBXFileReference; lastKnownFileType = file; path = 7peopleAsked.db; sourceTree = "<group>"; };
+		B87063911B425D2F009667F2 /* PAAudioPlayerManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PAAudioPlayerManager.h; sourceTree = "<group>"; };
+		B87063921B425D2F009667F2 /* PAAudioPlayerManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PAAudioPlayerManager.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -435,6 +438,8 @@
 			isa = PBXGroup;
 			children = (
 				2AAE72C11A91A8ED00F8426F /* AppDelegate.h */,
+				B87063911B425D2F009667F2 /* PAAudioPlayerManager.h */,
+				B87063921B425D2F009667F2 /* PAAudioPlayerManager.m */,
 				2AAE72C21A91A8ED00F8426F /* AppDelegate.m */,
 				2AAE72C41A91A8ED00F8426F /* ViewController.h */,
 				2AAE72C51A91A8ED00F8426F /* ViewController.m */,
@@ -703,6 +708,7 @@
 			files = (
 				2AAD9EF51A9C06A90042A26F /* AnswerScreenView.m in Sources */,
 				2AAD9EF21A9C06840042A26F /* QuestionScreenView.m in Sources */,
+				B87063931B425D2F009667F2 /* PAAudioPlayerManager.m in Sources */,
 				2AB570AE1AB92DCA00BE77F4 /* FMDatabasePool.m in Sources */,
 				2AB570AF1AB92DCA00BE77F4 /* FMDatabaseQueue.m in Sources */,
 				2AAD9EEC1A9C062A0042A26F /* CharaCreateView.m in Sources */,
