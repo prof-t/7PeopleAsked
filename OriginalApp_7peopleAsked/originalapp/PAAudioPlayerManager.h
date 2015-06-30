@@ -23,7 +23,7 @@
 - (AVAudioPlayer *)createPlayerWithURLString:(NSString *)urlString forKey:(NSString *)key;
 
 //サウンドオブジェクトの生成（ファイル名）
-- (AVAudioPlayer *)createPlayerFileName:(NSString *)fileName forKey:(NSString *)key;
+- (AVAudioPlayer *)createPlayerWithFileName:(NSString *)fileName forKey:(NSString *)key;
 
 //サウンドオブジェクトの生成（ファイル名）、ループ指定
 - (AVAudioPlayer *)createPlayerWithFileName:(NSString *)fileName forKey:(NSString *)key loop:(NSInteger)loop;
@@ -32,7 +32,7 @@
 - (AVAudioPlayer *)playerWithKey:(NSString *)key;
 
 //サウンドオブジェクトの破棄
-- (void)delatePlayerWithKey:(NSString *)key;
+- (void)deletePlayerWithKey:(NSString *)key;
 
 //サウンドオブジェクトの全破棄
 - (void)deleteAllPlayer;
