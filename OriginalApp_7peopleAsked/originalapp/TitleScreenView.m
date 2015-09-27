@@ -13,10 +13,9 @@
 @end
 
 @implementation TitleScreenView
-
+#pragma mark - View LifeCycle
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
     
     NSURL *voiceURL = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"title1" ofType:@"wav"]];
     _playerVoice = [[AVAudioPlayer alloc]initWithContentsOfURL:voiceURL error:nil];
@@ -46,6 +45,11 @@
 }
 */
 
+#pragma mark - Public Methods
+
+#pragma mark - Private Methods
+
+#pragma mark - IBAction
 - (IBAction)gameStart:(id)sender
 {
     //もし、UserDefaultに登録情報があったら、読みこむ

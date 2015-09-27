@@ -132,6 +132,7 @@
     
 }
 
+#pragma mark - View LifeCycle
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
@@ -383,11 +384,21 @@
     [self announceScore];
 }
 
-- (void)didReceiveMemoryWarning {
+- (void)didReceiveMemoryWarning
+{
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
 
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [self.player stop];
+    [self.voicePlayer stop];
+}
+
+#pragma mark - Public Methods
+
+#pragma mark - Private Methods
 -(void)announceScore
 {
     //3秒経過したら表示する
@@ -455,59 +466,6 @@
     
 }
 
--(void)touchesBegan:(NSSet*)touches withEvent:(UIEvent *)event
-{
-    UITouch *touch = [[event allTouches]anyObject];
-    //    [self moveTest];
-    
-    //回答発表メソッドを実行
-    //    [self announceScore];
-    
-}
-
-- (IBAction)resultButton:(id)sender
-{
-
-    int player1Lank = [self scoringFromDistancePlus:averageScoreDistance_player1 score:self.player1_Answer];
-    int player2Lank = [self scoringFromDistancePlus:averageScoreDistance_player2 score:self.player2_Answer];
-    int player3Lank = [self scoringFromDistancePlus:averageScoreDistance_player3 score:self.player3_Answer];
-    int player4Lank = [self scoringFromDistancePlus:averageScoreDistance_player4 score:self.player4_Answer];
-    int player5Lank = [self scoringFromDistancePlus:averageScoreDistance_player5 score:self.player5_Answer];
-    int player6Lank = [self scoringFromDistancePlus:averageScoreDistance_player6 score:self.player6_Answer];
-    int player7Lank = [self scoringFromDistancePlus:averageScoreDistance_player7 score:self.player7_Answer];
-    
-    NSLog(@"%d,%d,%d,%d,%d,%d,%d", player1Lank, player2Lank, player3Lank, player4Lank, player5Lank, player6Lank, player7Lank);
-    
-    self.player1_totalScore = [self scoreingPlusMinus:player1Lank totalScore:self.player1_totalScore];
-        self.player2_totalScore = [self scoreingPlusMinus:player2Lank totalScore:self.player2_totalScore];
-        self.player3_totalScore = [self scoreingPlusMinus:player3Lank totalScore:self.player3_totalScore];
-        self.player4_totalScore = [self scoreingPlusMinus:player4Lank totalScore:self.player4_totalScore];
-        self.player5_totalScore = [self scoreingPlusMinus:player5Lank totalScore:self.player5_totalScore];
-        self.player6_totalScore = [self scoreingPlusMinus:player6Lank totalScore:self.player6_totalScore];
-        self.player7_totalScore = [self scoreingPlusMinus:player7Lank totalScore:self.player7_totalScore];
-    
-    NSString *totalScoreGameEnd;
-    totalScoreGameEnd= [[NSString alloc]initWithFormat:@"%@点",self.player1_totalScore];
-    totalScore1.text = totalScoreGameEnd;
-    totalScoreGameEnd= [[NSString alloc]initWithFormat:@"%@点",self.player2_totalScore];
-    totalScore2.text = totalScoreGameEnd;
-    totalScoreGameEnd= [[NSString alloc]initWithFormat:@"%@点",self.player3_totalScore];
-    totalScore3.text = totalScoreGameEnd;
-    totalScoreGameEnd= [[NSString alloc]initWithFormat:@"%@点",self.player4_totalScore];
-    totalScore4.text = totalScoreGameEnd;
-    totalScoreGameEnd= [[NSString alloc]initWithFormat:@"%@点",self.player5_totalScore];
-    totalScore5.text = totalScoreGameEnd;
-    totalScoreGameEnd= [[NSString alloc]initWithFormat:@"%@点",self.player6_totalScore];
-    totalScore6.text = totalScoreGameEnd;
-    totalScoreGameEnd= [[NSString alloc]initWithFormat:@"%@点",self.player7_totalScore];
-    totalScore7.text = totalScoreGameEnd;
-    
-    self.quizRound = self.quizRound + 1;
-    
-    //一度押したら、ボタンを押せなくする
-    resultButton.enabled = NO;
-}
-
 //距離から、各々の順位を決めるメソッド
 -(int)scoringFromDistancePlus:(NSString*)distance score:(NSNumber*)score
 {
@@ -536,7 +494,7 @@
     if(playerRank == 1){
         totalScoreInt = totalScoreInt + 100;
     } else if(playerRank == 2){
-                totalScoreInt = totalScoreInt + 50;
+        totalScoreInt = totalScoreInt + 50;
     } else if(playerRank == 4){
         totalScoreInt = totalScoreInt + 20;
     } else if(playerRank == 6){
@@ -584,7 +542,7 @@
 -(void)performComplete:(NSNumber*)score
 {
     NSString* scoreText = [[NSString alloc] initWithFormat:@"%@",score];
-
+    
     
     scoreAnnounceView.hidden=NO;;
     gakubuti.hidden=NO;
@@ -592,7 +550,7 @@
     scoreAnnounceLabel.text = scoreText;
     
     NSLog(@"scoreは%@だよー",scoreAnnounceLabel.text);
-
+    
     
 }
 
@@ -604,8 +562,65 @@
     scoreAnnounceLabel.hidden=YES;
 }
 
+#pragma mark - Touch Events
+-(void)touchesBegan:(NSSet*)touches withEvent:(UIEvent *)event
+{
+    UITouch *touch = [[event allTouches]anyObject];
+    //    [self moveTest];
+    
+    //回答発表メソッドを実行
+    //    [self announceScore];
+    
+}
+
+#pragma mark - IBAction
+- (IBAction)resultButton:(id)sender
+{
+
+    int player1Lank = [self scoringFromDistancePlus:averageScoreDistance_player1 score:self.player1_Answer];
+    int player2Lank = [self scoringFromDistancePlus:averageScoreDistance_player2 score:self.player2_Answer];
+    int player3Lank = [self scoringFromDistancePlus:averageScoreDistance_player3 score:self.player3_Answer];
+    int player4Lank = [self scoringFromDistancePlus:averageScoreDistance_player4 score:self.player4_Answer];
+    int player5Lank = [self scoringFromDistancePlus:averageScoreDistance_player5 score:self.player5_Answer];
+    int player6Lank = [self scoringFromDistancePlus:averageScoreDistance_player6 score:self.player6_Answer];
+    int player7Lank = [self scoringFromDistancePlus:averageScoreDistance_player7 score:self.player7_Answer];
+    
+    NSLog(@"%d,%d,%d,%d,%d,%d,%d", player1Lank, player2Lank, player3Lank, player4Lank, player5Lank, player6Lank, player7Lank);
+    
+    self.player1_totalScore = [self scoreingPlusMinus:player1Lank totalScore:self.player1_totalScore];
+        self.player2_totalScore = [self scoreingPlusMinus:player2Lank totalScore:self.player2_totalScore];
+        self.player3_totalScore = [self scoreingPlusMinus:player3Lank totalScore:self.player3_totalScore];
+        self.player4_totalScore = [self scoreingPlusMinus:player4Lank totalScore:self.player4_totalScore];
+        self.player5_totalScore = [self scoreingPlusMinus:player5Lank totalScore:self.player5_totalScore];
+        self.player6_totalScore = [self scoreingPlusMinus:player6Lank totalScore:self.player6_totalScore];
+        self.player7_totalScore = [self scoreingPlusMinus:player7Lank totalScore:self.player7_totalScore];
+    
+    NSString *totalScoreGameEnd;
+    totalScoreGameEnd= [[NSString alloc]initWithFormat:@"%@点",self.player1_totalScore];
+    totalScore1.text = totalScoreGameEnd;
+    totalScoreGameEnd= [[NSString alloc]initWithFormat:@"%@点",self.player2_totalScore];
+    totalScore2.text = totalScoreGameEnd;
+    totalScoreGameEnd= [[NSString alloc]initWithFormat:@"%@点",self.player3_totalScore];
+    totalScore3.text = totalScoreGameEnd;
+    totalScoreGameEnd= [[NSString alloc]initWithFormat:@"%@点",self.player4_totalScore];
+    totalScore4.text = totalScoreGameEnd;
+    totalScoreGameEnd= [[NSString alloc]initWithFormat:@"%@点",self.player5_totalScore];
+    totalScore5.text = totalScoreGameEnd;
+    totalScoreGameEnd= [[NSString alloc]initWithFormat:@"%@点",self.player6_totalScore];
+    totalScore6.text = totalScoreGameEnd;
+    totalScoreGameEnd= [[NSString alloc]initWithFormat:@"%@点",self.player7_totalScore];
+    totalScore7.text = totalScoreGameEnd;
+    
+    self.quizRound = self.quizRound + 1;
+    
+    //一度押したら、ボタンを押せなくする
+    resultButton.enabled = NO;
+}
+
+
 - (IBAction)nextQuestion:(id)sender
 {
+    
 }
 
 //画面遷移する際に、パラメーターを渡す
@@ -681,52 +696,10 @@
             qsv2.player7 = YES;
         }
         
-        
     } else {
         NSLog(@"segueの名前が間違ってるんじゃない？");
     }
     
 }
-
-
-- (void)viewWillDisappear:(BOOL)animated
-{
-    [self.player stop];
-    [self.voicePlayer stop];
-}
-/* ★☆★やること
- ・誰から発表？
- ・○○さんの回答は・・・
- ・表示！
- ・player○●さんの回答を
- 
- 
- CGRect *point1 = CGRectMake(41,167,77,188);
- CGRect *point2 = CGRectMake(125,167,77,188);
- CGRect *point3 = CGRectMake(212,167,77,188);
- CGRect *point4 = CGRectMake(292,167,77,188);
- CGRect *point5 = CGRectMake(382,167,77,188);
- CGRect *point6 = CGRectMake(464,167,77,188);
- CGRect *point7 = CGRectMake(548,167,77,188);
- 
- 
- 距離を取得したら、それをNSArrayに格納して比較
- 中央値、最小値、最大値を取得して、それぞれの数値と＝のデータを持つプレイヤーを
- ５位、４位、
- 
- 
- ★☆★ */
-
-
-
-/*
- #pragma mark - Navigation
- 
- // In a storyboard-based application, you will often want to do a little preparation before navigation
- - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
- // Get the new view controller using [segue destinationViewController].
- // Pass the selected object to the new view controller.
- }
- */
 
 @end

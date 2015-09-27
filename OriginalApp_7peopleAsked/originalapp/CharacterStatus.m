@@ -10,6 +10,11 @@
 
 @implementation CharacterStatus
 
+#pragma mark - View LifeCycle
+
+#pragma mark - Public Methods
+
+#pragma mark - Private Methods
 -(UIImage*)trimIMG:(int)number
 {
     // 切り抜き元となる画像を用意する。
@@ -81,9 +86,6 @@
         
     }
     
-    
-
-    
     // CoreGraphicsの機能を用いて、
     // 切り抜いた画像を作成する。
     CGImageRef srcImageRef = [srcImage CGImage];
@@ -103,7 +105,7 @@
     return animationGifView;
 }
 
-
+// トリミングを行う
 -(UIWebView*)trimIMGView:(int)number
 {
 

@@ -139,92 +139,7 @@
     
 }
 
-
-//アラートの表示
--(void)showAlert:(NSString*)title text:(NSString*)text{
-    UIAlertView* alert=[[UIAlertView alloc]initWithTitle:title message:text delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-    [alert show];
-}
-
-//文字列のバイト配列変換
--(NSData*)str2data:(NSString*)str
-{
-    return [str dataUsingEncoding:NSUTF8StringEncoding];
-    
-}
-
-//バイト配列の文字列変換
--(NSString*)data2str:(NSData*)data
-{
-    NSString* test = [[NSString alloc]initWithData:data encoding:NSUTF8StringEncoding];
-    NSLog(@"変換したtestの中身は%@",test);
-    return test;
-}
-
-////バイト配列の書き込み
-//-(BOOL)data2file:(NSData*)data fileName:(NSString*)fileName
-//{
-//    NSString* path = [NSHomeDirectory()stringByAppendingPathComponent:@"Documents"];
-//    path = [path stringByAppendingPathComponent:fileName];
-//    return [data writeToFile:path atomically:YES];
-//}
-//
-////バイト配列の読み込み
-//-(NSData*)file2data:(NSString*)fileName
-//{
-//    NSString* path = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents"];
-//    path = [path stringByAppendingPathComponent:fileName];
-//    return [NSData dataWithContentsOfFile:path];
-//}
-
-
-//ボタンの生成
--(UIButton*)makeButton:(CGRect)rect text:(NSString*)text tag:(int)tag
-{
-    UIButton *button=[UIButton buttonWithType:UIButtonTypeRoundedRect];
-    [button setFrame:rect];
-    [button setTitle:text forState:UIControlStateNormal];
-    [button setTag:tag];
-    [button addTarget:self action:@selector(clickButton:) forControlEvents:UIControlEventTouchUpInside];
-    return button;
-}
-
-//UI状態の指定
--(void)updateUI
-{
-    UILabel *label = (UILabel*)[self.view viewWithTag:100];
-    
-    
-    //セッション未接続
-    if(_state==MCSessionStateNotConnected){
-        
-        label.text = @"オフラインモード";
-    }
-    //セッション接続中
-    else if (_state ==MCSessionStateConnecting){
-        
-        label.text =@"接続中・・・";
-    }
-    //セッション接続
-    else if(_state==MCSessionStateConnected){
-        
-        label.text = @"オンラインモード";
-        
-        UIButton *button1 = (UIButton*)[self.view viewWithTag:6];
-        button1.alpha = 0.0f;
-        UIButton *button2 = (UIButton*)[self.view viewWithTag:5];
-        button2.alpha = 0.0f;
-        sendPlayerStatusButton.hidden = NO;
-    }
-    
-}
-
-//テキストフィールドの更新
--(void)updateTextField:(NSString*)text
-{
-    _textField.text=text;
-}
-
+#pragma mark - View LifeCycle
 //初期化
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -349,55 +264,100 @@
     // Dispose of any resources that can be recreated.
 }
 
-//ボタンクリック時に呼ばれる
--(IBAction)clickButton:(UIButton*)sender
+- (void)viewWillDisappear:(BOOL)animated
 {
-    //アドバタイズの開始ボタン
-    if(sender.tag==5){
-        _assistant = [[MCAdvertiserAssistant alloc]initWithServiceType:SERVICE_TYPE discoveryInfo:nil session:_session];
-        [_assistant start];
-        
-        [self showAlert:@"" text:@"ゲーム部屋を作ります"];
-        
-        //アドバタイズ、ブラウズボタンを押せないように、ボタンを隠す
-        hostPlayer = YES;
-        UIButton *button = (UIButton*)[self.view viewWithTag:6];
-        button.alpha = 0.0f;
-        sender.alpha = 0.0f;
-        
-        /* ★☆★自分がホストの場合、player1は自分★☆★ */
-        [self addGamePlayer:self.player_name gender:self.player_gender age:self.player_age avatar:self.player_avatar playerID:0];
-        playerCount = 1;
-        onlinePlayerCount = 1;
-        
-    }
+    [self.player stop];
+    [self.voicePlayer stop];
+}
+
+#pragma mark - Public Methods
+
+#pragma mark - Private Methods
+//アラートの表示
+-(void)showAlert:(NSString*)title text:(NSString*)text{
+    UIAlertView* alert=[[UIAlertView alloc]initWithTitle:title message:text delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+    [alert show];
+}
+
+//文字列のバイト配列変換
+-(NSData*)str2data:(NSString*)str
+{
+    return [str dataUsingEncoding:NSUTF8StringEncoding];
     
-    //ブラウズの開始ボタン
-    if(sender.tag==6){
-        _browseViewController = [[MCBrowserViewController alloc]initWithServiceType:SERVICE_TYPE session:_session];
-        _browseViewController.delegate = self;
-        [self presentViewController:_browseViewController animated:YES completion:nil];
-        
-        [self showAlert:@"" text:@"ゲーム部屋を探します"];
-        
-        hostPlayer = NO; //ホストプレイヤー解除、
-        onlinePlayerCount = 0; //オンラインPlayerの番号をリセット
-        _btnAdvertise.alpha = 0.0f; //アドバタイズボタンを押せないようにボタンを隠す
-        gameStartNextScreenButton.enabled = NO;//ゲームスタートボタンも押せないようにする
-    }
+}
+
+//バイト配列の文字列変換
+-(NSString*)data2str:(NSData*)data
+{
+    NSString* test = [[NSString alloc]initWithData:data encoding:NSUTF8StringEncoding];
+    NSLog(@"変換したtestの中身は%@",test);
+    return test;
+}
+
+////バイト配列の書き込み
+//-(BOOL)data2file:(NSData*)data fileName:(NSString*)fileName
+//{
+//    NSString* path = [NSHomeDirectory()stringByAppendingPathComponent:@"Documents"];
+//    path = [path stringByAppendingPathComponent:fileName];
+//    return [data writeToFile:path atomically:YES];
+//}
+//
+////バイト配列の読み込み
+//-(NSData*)file2data:(NSString*)fileName
+//{
+//    NSString* path = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents"];
+//    path = [path stringByAppendingPathComponent:fileName];
+//    return [NSData dataWithContentsOfFile:path];
+//}
+
+//ボタンの生成
+-(UIButton*)makeButton:(CGRect)rect text:(NSString*)text tag:(int)tag
+{
+    UIButton *button=[UIButton buttonWithType:UIButtonTypeRoundedRect];
+    [button setFrame:rect];
+    [button setTitle:text forState:UIControlStateNormal];
+    [button setTag:tag];
+    [button addTarget:self action:@selector(clickButton:) forControlEvents:UIControlEventTouchUpInside];
+    return button;
+}
+
+//UI状態の指定
+-(void)updateUI
+{
+    UILabel *label = (UILabel*)[self.view viewWithTag:100];
     
-    //メッセージの送信ボタン
-    else if(sender.tag==BTN_SEND){
-               
-        //セッションの切断ボタン
-    } else if(sender.tag==BTN_DISCONNECT){
-        [_session disconnect];
-        _state=MCSessionStateNotConnected;
-        [self updateUI];
+    
+    //セッション未接続
+    if(_state==MCSessionStateNotConnected){
+        
+        label.text = @"オフラインモード";
+    }
+    //セッション接続中
+    else if (_state ==MCSessionStateConnecting){
+        
+        label.text =@"接続中・・・";
+    }
+    //セッション接続
+    else if(_state==MCSessionStateConnected){
+        
+        label.text = @"オンラインモード";
+        
+        UIButton *button1 = (UIButton*)[self.view viewWithTag:6];
+        button1.alpha = 0.0f;
+        UIButton *button2 = (UIButton*)[self.view viewWithTag:5];
+        button2.alpha = 0.0f;
+        sendPlayerStatusButton.hidden = NO;
     }
     
 }
 
+//テキストフィールドの更新
+-(void)updateTextField:(NSString*)text
+{
+    _textField.text=text;
+}
+
+#pragma mark - Session Delegate
 //NSDataオブジェクト受信時に呼ばれる
 -(void)session:(MCSession*)session didReceiveData:(NSData *)data fromPeer:(MCPeerID *)peerID
 {
@@ -532,15 +492,60 @@
     [_browseViewController dismissViewControllerAnimated:YES completion:nil];
 }
 
-/*
- #pragma mark - Navigation
- 
- // In a storyboard-based application, you will often want to do a little preparation before navigation
- - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
- // Get the new view controller using [segue destinationViewController].
- // Pass the selected object to the new view controller.
- }
- */
+#pragma mark - IBAction
+//ボタンクリック時に呼ばれる
+-(IBAction)clickButton:(UIButton*)sender
+{
+    //アドバタイズの開始ボタン
+    if(sender.tag==5){
+        _assistant = [[MCAdvertiserAssistant alloc]initWithServiceType:SERVICE_TYPE discoveryInfo:nil session:_session];
+        [_assistant start];
+        
+        [self showAlert:@"" text:@"ゲーム部屋を作ります"];
+        
+        //アドバタイズ、ブラウズボタンを押せないように、ボタンを隠す
+        hostPlayer = YES;
+        UIButton *button = (UIButton*)[self.view viewWithTag:6];
+        button.alpha = 0.0f;
+        sender.alpha = 0.0f;
+        
+        /* ★☆★自分がホストの場合、player1は自分★☆★ */
+        [self addGamePlayer:self.player_name gender:self.player_gender age:self.player_age avatar:self.player_avatar playerID:0];
+        playerCount = 1;
+        onlinePlayerCount = 1;
+        
+    }
+    
+    //ブラウズの開始ボタン
+    if(sender.tag==6){
+        _browseViewController = [[MCBrowserViewController alloc]initWithServiceType:SERVICE_TYPE session:_session];
+        _browseViewController.delegate = self;
+        [self presentViewController:_browseViewController animated:YES completion:nil];
+        
+        [self showAlert:@"" text:@"ゲーム部屋を探します"];
+        
+        hostPlayer = NO; //ホストプレイヤー解除、
+        onlinePlayerCount = 0; //オンラインPlayerの番号をリセット
+        _btnAdvertise.alpha = 0.0f; //アドバタイズボタンを押せないようにボタンを隠す
+        gameStartNextScreenButton.enabled = NO;//ゲームスタートボタンも押せないようにする
+    }
+    
+    //メッセージの送信ボタン
+    else if(sender.tag==BTN_SEND){
+        
+        //セッションの切断ボタン
+    } else if(sender.tag==BTN_DISCONNECT){
+        [_session disconnect];
+        _state=MCSessionStateNotConnected;
+        [self updateUI];
+    }
+    
+}
+
+- (IBAction)firstViewReturnActionForSegue:(UIStoryboardSegue *)segue
+{
+    NSLog(@"Return to ViewController");
+}
 
 -(IBAction)exitSegue:(UIStoryboardSegue*)segue
 {
@@ -661,6 +666,7 @@
     
 }
 
+#pragma mark - Transition Events
 //画面遷移する際に、パラメーターを渡す
 -(void)prepareForSegue:(UIStoryboardSegue*)segue sender:(id)sender
 {
@@ -791,11 +797,6 @@
     }else {
         NSLog(@"segueの名前が間違ってるんじゃない？");
     }
-}
-
-- (IBAction)firstViewReturnActionForSegue:(UIStoryboardSegue *)segue
-{
-    NSLog(@"Return to ViewController");
 }
 
 //参加者追加メソッド
@@ -1063,12 +1064,6 @@
 
         
     }
-}
-
-- (void)viewWillDisappear:(BOOL)animated
-{
-    [self.player stop];
-    [self.voicePlayer stop];
 }
 
 @end

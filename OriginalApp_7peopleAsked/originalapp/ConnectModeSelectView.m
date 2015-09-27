@@ -28,10 +28,9 @@
     
 }
 
-- (void)viewDidLoad {
-//    [super viewDidLoad];
-    // Do any additional setup after loading the view.
-    
+#pragma mark - View LifeCycle
+- (void)viewDidLoad
+{
     NSURL *voiceURL = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"connectModeSelect1" ofType:@"wav"]];
     _voicePlayer = [[AVAudioPlayer alloc]initWithContentsOfURL:voiceURL error:nil];
     self.player.numberOfLoops =  0;
@@ -68,21 +67,23 @@
 
 }
 
-- (void)didReceiveMemoryWarning {
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [self.player stop];
+    [self.voicePlayer stop];
+}
+
+- (void)didReceiveMemoryWarning
+{
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
 
-/*
-#pragma mark - Navigation
+#pragma mark - Public Methods
 
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
+#pragma mark - Private Methods
 
+#pragma mark - IBAction
 - (IBAction)onlineMode:(id)sender
 {
     aloneMode = NO;
@@ -126,12 +127,6 @@
      } else {
          
      }
-}
-
-- (void)viewWillDisappear:(BOOL)animated
-{
-    [self.player stop];
-    [self.voicePlayer stop];
 }
 
 @end

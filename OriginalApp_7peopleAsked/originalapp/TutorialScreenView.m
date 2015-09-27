@@ -16,6 +16,7 @@
 
 @implementation TutorialScreenView
 
+#pragma mark - View LifeCycle
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
@@ -57,19 +58,13 @@
     [self.voicePlayer stop];
 }
 
+#pragma mark - Public Methods
+
+#pragma mark - Private Methods
 -(void)performComplete
 {
     [self.voicePlayer play];
     
 }
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end

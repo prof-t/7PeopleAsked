@@ -36,23 +36,7 @@
     CharacterStatus *characterStatus;
 }
 
--(void)showAlert:(NSString*)title text:(NSString*)text
-{
-    UIAlertView* alert = [[UIAlertView alloc]initWithTitle:title message:text delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-    [alert show];
-}
-
-// テキストボタンの生成
-- (UIButton*)makeButton:(CGRect)rect text:(NSString*)text tag:(int)tag {
-    UIButton* button=[UIButton buttonWithType:UIButtonTypeRoundedRect];
-    [button setFrame:rect];
-    [button setTitle:text forState:UIControlStateNormal];
-    [button setTag:tag];
-    [button addTarget:self action:@selector(clickButton:)
-     forControlEvents:UIControlEventTouchUpInside];
-    return button;
-}
-
+#pragma mark - View LifeCycle
 //初期化
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -70,7 +54,7 @@
     
     //ピッカービューに入れる文字列
     _items = [[NSMutableArray alloc]initWithObjects:@"東方（霊夢）",@"東方（チルノ）",@"東方（レミリア）",@"東方（咲夜）",@"東方（妖夢）",@"東方（小町）",@"縦ロール",@"ラブライブ！",@"猫１",@"猫２",@"ペンギン",@"セフィロス",nil];
-
+    
     //ピッカービューの生成
     _pickerView = [[UIPickerView alloc]init];
     [_pickerView setFrame:CGRectMake(400,30,200,250)];
@@ -106,147 +90,17 @@
             NSLog(@"コピー失敗しました");
         }
     }
-
+    
     //データベースのオープン
     db = [FMDatabase databaseWithPath:databasePath];
     [db open];
-
+    
 }
 
-//行数の取得
--(NSInteger)pickerView:(UIPickerView*)pickerView numberOfRowsInComponent:(NSInteger)component
+- (void)viewWillDisappear:(BOOL)animated
 {
-//    return _items.count;
-    return 12;
-}
-
-//行のセルの取得
--(UIView*)pickerView:(UIPickerView *)pickerView viewForRow:(NSInteger)row forComponent:(NSInteger)component reusingView:(UIView *)view
-{
-    //セルの生成
-    UIView* cell = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 200, 100)];
-    
-    //ラベルの生成
-    NSString* avatarName = [_items objectAtIndex:row];
-    UILabel* label =[[UILabel alloc]init];
-    [label setFrame:CGRectMake(0,0,200,100)];
-    [label setFont:[UIFont systemFontOfSize:18]];
-    [label setBackgroundColor:[UIColor whiteColor]];
-    [label setText:avatarName];
-    [cell addSubview:label];
-    
-    return cell;
-}
-
-//行の高さの取得
--(CGFloat)pickerView:(UIPickerView *)pickerView rowHeightForComponent:(NSInteger)component
-{
-    return 20;
-}
-
-//ドラム数（componentの数）
--(NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView
-{
-    return 1;
-}
-
-//ピッカービュー選択時に呼ばれる
--(void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component
-{
-    _selectIdx=row;
-    
-    /* GIFアニメ */
-
-    CGRect webviewRect = CGRectMake(400, 210, 150, 120);
-
-
-    if(_selectIdx == 0){
-        _myStatus.player_avatar =@"tou_reimu_to.gif";
-        avatarValue = 0;
-        animationGifView = [characterStatus makeWebView:_myStatus.player_avatar rect:webviewRect];
-    } else if(_selectIdx == 1){
-        _myStatus.player_avatar =@"tou_cirno_k.gif";
-        avatarValue = 1;
-        animationGifView = [characterStatus makeWebView:_myStatus.player_avatar rect:webviewRect];
-    } else if(_selectIdx == 2){
-        _myStatus.player_avatar =@"tou_remilia_k.gif";
-        avatarValue = 2;
-        animationGifView = [characterStatus makeWebView:_myStatus.player_avatar rect:webviewRect];
-    } else if(_selectIdx == 3){
-        _myStatus.player_avatar =@"tou_sakuya_k.gif";
-        avatarValue = 3;
-        animationGifView = [characterStatus makeWebView:_myStatus.player_avatar rect:webviewRect];
-    } else if(_selectIdx == 4){
-        _myStatus.player_avatar =@"tou_youmu_mo.gif";
-        avatarValue = 4;
-        animationGifView = [characterStatus makeWebView:_myStatus.player_avatar rect:webviewRect];
-    } else if(_selectIdx == 5){
-        _myStatus.player_avatar =@"tou_komachi_k.gif";
-        avatarValue = 5;
-        animationGifView = [characterStatus makeWebView:_myStatus.player_avatar rect:webviewRect];
-    } else if(_selectIdx == 6){
-        _myStatus.player_avatar =@"walk.gif";
-        avatarValue = 6;
-        animationGifView = [characterStatus makeWebView:_myStatus.player_avatar rect:webviewRect];
-    } else if(_selectIdx == 7){
-        _myStatus.player_avatar =@"μ's1.gif";
-        avatarValue = 7;
-        animationGifView = [characterStatus makeWebView:_myStatus.player_avatar rect:webviewRect];
-    } else if(_selectIdx == 8){
-        _myStatus.player_avatar =@"neko.gif";
-        avatarValue = 8;
-        animationGifView = [characterStatus makeWebView:_myStatus.player_avatar rect:webviewRect];
-    } else if(_selectIdx == 9){
-        _myStatus.player_avatar =@"neko2.gif";
-        avatarValue = 9;
-        animationGifView = [characterStatus makeWebView:_myStatus.player_avatar rect:webviewRect];
-    } else if(_selectIdx == 10){
-        _myStatus.player_avatar =@"penn.gif";
-        avatarValue = 10;
-        animationGifView = [characterStatus makeWebView:_myStatus.player_avatar rect:webviewRect];
-    } else if(_selectIdx == 11){
-        _myStatus.player_avatar =@"ff7.gif";
-        avatarValue = 11;
-        animationGifView = [characterStatus makeWebView:_myStatus.player_avatar rect:webviewRect];
-    } else {
-        NSLog(@"アバター設定に不具合あり");
-    }
-
-        [self.view addSubview: animationGifView];
-    
-//    if(_selectIdx == 0){
-//        _myStatus.player_avatar =@"eto_ca_025.png";
-//        avatarValue = 0;
-//    } else if(_selectIdx == 1){
-//        _myStatus.player_avatar =@"eto_ca_026.png";
-//        avatarValue = 1;
-//    } else if(_selectIdx == 2){
-//        _myStatus.player_avatar =@"eto_ca_027.png";
-//        avatarValue = 2;
-//    } else if(_selectIdx == 3){
-//        _myStatus.player_avatar =@"eto_ca_028.png";
-//        avatarValue = 3;
-//    } else if(_selectIdx == 4){
-//        _myStatus.player_avatar =@"eto_ca_029.png";
-//        avatarValue = 4;
-//    } else if(_selectIdx == 5){
-//        _myStatus.player_avatar =@"eto_ca_030.png";
-//        avatarValue = 5;
-//    } else if(_selectIdx == 6){
-//        _myStatus.player_avatar =@"eto_ca_031.png";
-//        avatarValue = 6;
-//    } else if(_selectIdx == 7){
-//        _myStatus.player_avatar =@"eto_ca_032.png";
-//        avatarValue = 7;
-//    } else if(_selectIdx == 8){
-//        _myStatus.player_avatar =@"eto_ca_033.png";
-//        avatarValue = 8;
-//    } else {
-//        NSLog(@"アバター設定に不具合あり");
-//    }
-    
-        NSLog(@"アバターは%@",_myStatus.player_avatar);
-//    [_myImage setImage:[UIImage imageNamed:_myStatus.player_avatar]];
+    [self.player stop];
+    [self.voicePlayer stop];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -254,6 +108,30 @@
     // Dispose of any resources that can be recreated.
 }
 
+#pragma mark - Public Methods
+
+#pragma mark - Private Methods
+// アラートメッセージの表示
+-(void)showAlert:(NSString*)title text:(NSString*)text
+{
+    UIAlertView* alert = [[UIAlertView alloc]initWithTitle:title message:text delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+    [alert show];
+}
+
+
+// テキストボタンの生成
+- (UIButton*)makeButton:(CGRect)rect text:(NSString*)text tag:(int)tag {
+    UIButton* button=[UIButton buttonWithType:UIButtonTypeRoundedRect];
+    [button setFrame:rect];
+    [button setTitle:text forState:UIControlStateNormal];
+    [button setTag:tag];
+    [button addTarget:self action:@selector(clickButton:)
+     forControlEvents:UIControlEventTouchUpInside];
+    return button;
+}
+
+
+#pragma mark - IBAction
 // ボタンクリック時に呼ばれる
 - (IBAction)clickButton:(UIButton*)sender {
     if (sender.tag==BTN_SHOW) {
@@ -262,16 +140,6 @@
                                   @" ピッカーの選択 \n%@",name]];   
     }
 }
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 - (IBAction)makeName:(UITextField *)sender
 {
@@ -327,12 +195,9 @@
     } else {
         NSLog(@"年齢ボタンに不具合があるよ");
     }
-    
-//    NSLog(@"年齢は%@",_myStatus.player_age);
-    
+
     //プロパティに入っている年齢を表示ラベルに表示させる
     ageLabel.text = _myStatus.player_age;
-    
 }
 
 - (IBAction)saveToFile:(UIButton *)sender
@@ -457,16 +322,7 @@
 {
     //タッチしたらキーボード閉じる
     [nameTextField resignFirstResponder];
-    
 
-   
-
-}
-
-- (void)viewWillDisappear:(BOOL)animated
-{
-    [self.player stop];
-    [self.voicePlayer stop];
 }
 
 - (IBAction)gameStart:(id)sender
@@ -474,6 +330,7 @@
     
 }
 
+#pragma mark - Transition Events
 //画面遷移する際に、パラメーターを渡す
 -(void)prepareForSegue:(UIStoryboardSegue*)segue sender:(id)sender
 {
@@ -483,9 +340,145 @@
         cmsv.player_gender = _myStatus.player_gender;
         cmsv.player_age = _myStatus.player_age;
         cmsv.player_avatar = _myStatus.player_avatar;
-        
     }
-        
 }
+
+#pragma mark - PickerView Delegate
+//行数の取得
+-(NSInteger)pickerView:(UIPickerView*)pickerView numberOfRowsInComponent:(NSInteger)component
+{
+    //    return _items.count;
+    return 12;
+}
+
+//行のセルの取得
+-(UIView*)pickerView:(UIPickerView *)pickerView viewForRow:(NSInteger)row forComponent:(NSInteger)component reusingView:(UIView *)view
+{
+    //セルの生成
+    UIView* cell = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 200, 100)];
+    
+    //ラベルの生成
+    NSString* avatarName = [_items objectAtIndex:row];
+    UILabel* label =[[UILabel alloc]init];
+    [label setFrame:CGRectMake(0,0,200,100)];
+    [label setFont:[UIFont systemFontOfSize:18]];
+    [label setBackgroundColor:[UIColor whiteColor]];
+    [label setText:avatarName];
+    [cell addSubview:label];
+    
+    return cell;
+}
+
+//行の高さの取得
+-(CGFloat)pickerView:(UIPickerView *)pickerView rowHeightForComponent:(NSInteger)component
+{
+    return 20;
+}
+
+//ドラム数（componentの数）
+-(NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView
+{
+    return 1;
+}
+
+//ピッカービュー選択時に呼ばれる
+-(void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component
+{
+    _selectIdx=row;
+    
+    /* GIFアニメ */
+    
+    CGRect webviewRect = CGRectMake(400, 210, 150, 120);
+    
+    
+    if(_selectIdx == 0){
+        _myStatus.player_avatar =@"tou_reimu_to.gif";
+        avatarValue = 0;
+        animationGifView = [characterStatus makeWebView:_myStatus.player_avatar rect:webviewRect];
+    } else if(_selectIdx == 1){
+        _myStatus.player_avatar =@"tou_cirno_k.gif";
+        avatarValue = 1;
+        animationGifView = [characterStatus makeWebView:_myStatus.player_avatar rect:webviewRect];
+    } else if(_selectIdx == 2){
+        _myStatus.player_avatar =@"tou_remilia_k.gif";
+        avatarValue = 2;
+        animationGifView = [characterStatus makeWebView:_myStatus.player_avatar rect:webviewRect];
+    } else if(_selectIdx == 3){
+        _myStatus.player_avatar =@"tou_sakuya_k.gif";
+        avatarValue = 3;
+        animationGifView = [characterStatus makeWebView:_myStatus.player_avatar rect:webviewRect];
+    } else if(_selectIdx == 4){
+        _myStatus.player_avatar =@"tou_youmu_mo.gif";
+        avatarValue = 4;
+        animationGifView = [characterStatus makeWebView:_myStatus.player_avatar rect:webviewRect];
+    } else if(_selectIdx == 5){
+        _myStatus.player_avatar =@"tou_komachi_k.gif";
+        avatarValue = 5;
+        animationGifView = [characterStatus makeWebView:_myStatus.player_avatar rect:webviewRect];
+    } else if(_selectIdx == 6){
+        _myStatus.player_avatar =@"walk.gif";
+        avatarValue = 6;
+        animationGifView = [characterStatus makeWebView:_myStatus.player_avatar rect:webviewRect];
+    } else if(_selectIdx == 7){
+        _myStatus.player_avatar =@"μ's1.gif";
+        avatarValue = 7;
+        animationGifView = [characterStatus makeWebView:_myStatus.player_avatar rect:webviewRect];
+    } else if(_selectIdx == 8){
+        _myStatus.player_avatar =@"neko.gif";
+        avatarValue = 8;
+        animationGifView = [characterStatus makeWebView:_myStatus.player_avatar rect:webviewRect];
+    } else if(_selectIdx == 9){
+        _myStatus.player_avatar =@"neko2.gif";
+        avatarValue = 9;
+        animationGifView = [characterStatus makeWebView:_myStatus.player_avatar rect:webviewRect];
+    } else if(_selectIdx == 10){
+        _myStatus.player_avatar =@"penn.gif";
+        avatarValue = 10;
+        animationGifView = [characterStatus makeWebView:_myStatus.player_avatar rect:webviewRect];
+    } else if(_selectIdx == 11){
+        _myStatus.player_avatar =@"ff7.gif";
+        avatarValue = 11;
+        animationGifView = [characterStatus makeWebView:_myStatus.player_avatar rect:webviewRect];
+    } else {
+        NSLog(@"アバター設定に不具合あり");
+    }
+    
+    [self.view addSubview: animationGifView];
+    
+    //    if(_selectIdx == 0){
+    //        _myStatus.player_avatar =@"eto_ca_025.png";
+    //        avatarValue = 0;
+    //    } else if(_selectIdx == 1){
+    //        _myStatus.player_avatar =@"eto_ca_026.png";
+    //        avatarValue = 1;
+    //    } else if(_selectIdx == 2){
+    //        _myStatus.player_avatar =@"eto_ca_027.png";
+    //        avatarValue = 2;
+    //    } else if(_selectIdx == 3){
+    //        _myStatus.player_avatar =@"eto_ca_028.png";
+    //        avatarValue = 3;
+    //    } else if(_selectIdx == 4){
+    //        _myStatus.player_avatar =@"eto_ca_029.png";
+    //        avatarValue = 4;
+    //    } else if(_selectIdx == 5){
+    //        _myStatus.player_avatar =@"eto_ca_030.png";
+    //        avatarValue = 5;
+    //    } else if(_selectIdx == 6){
+    //        _myStatus.player_avatar =@"eto_ca_031.png";
+    //        avatarValue = 6;
+    //    } else if(_selectIdx == 7){
+    //        _myStatus.player_avatar =@"eto_ca_032.png";
+    //        avatarValue = 7;
+    //    } else if(_selectIdx == 8){
+    //        _myStatus.player_avatar =@"eto_ca_033.png";
+    //        avatarValue = 8;
+    //    } else {
+    //        NSLog(@"アバター設定に不具合あり");
+    //    }
+    
+    NSLog(@"アバターは%@",_myStatus.player_avatar);
+    //    [_myImage setImage:[UIImage imageNamed:_myStatus.player_avatar]];
+}
+
 
 @end

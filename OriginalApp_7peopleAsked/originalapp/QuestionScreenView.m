@@ -161,6 +161,7 @@
     CGRect bigImage;
 }
 
+#pragma mark - View LifeCycle
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
@@ -346,16 +347,14 @@
     // Dispose of any resources that can be recreated.
 }
 
-/*
- #pragma mark - Navigation
- 
- // In a storyboard-based application, you will often want to do a little preparation before navigation
- - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
- // Get the new view controller using [segue destinationViewController].
- // Pass the selected object to the new view controller.
- }
- */
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [self.player stop];
+}
 
+#pragma mark - Public Methods
+
+#pragma mark - Private Methods
 //問題文生成メソッド
 -(void)questionFromDatabase
 {
@@ -481,6 +480,7 @@
     //    NSLog(@"%f",timeCount);
 }
 
+#pragma mark - Touch Events
 -(void)touchesEnded:(NSSet*)touches withEvent:(UIEvent*)event
 {
     UITouch *touch = [[event allTouches]anyObject];
@@ -565,71 +565,7 @@
     
 }
 
-//labelタッチイベントの中身
--(IBAction)clickCommand:(UILabel*)label
-{
-    labelTouchYESorNO = YES;
-    NSLog(@"labelのテキストは%@",label.text);
-    CGRect rect = CGRectInset(label.frame,5,5);
-    label.frame = rect;
-    decideQuestionLabel.text = label.text;
-    
-    //タイマーの停止
-    [_timer invalidate];
-    timeLabel.text = @"00";
-    _timer=nil;
-    
-    questionLabel1.userInteractionEnabled = NO;
-    questionLabel2.userInteractionEnabled = NO;
-    questionLabel3.userInteractionEnabled = NO;
-    
-    //もしplayerYESNO問題がYESであれば、「画像を選んでください」labelを表示する
-    if(selected_q_playerFromDatabase == YES){
-        
-        NSURL *voiceURL = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"questionView3" ofType:@"wav"]];
-        _voicePlayer = [[AVAudioPlayer alloc]initWithContentsOfURL:voiceURL error:nil];
-        self.player.numberOfLoops =  0;
-        [self.voicePlayer play];
-        
-        pleaseSelectPlayerLabel.hidden=NO;
-        NSLog(@"player問題はYESだよ");
-        avatarView1.userInteractionEnabled = YES;
-        avatarView2.userInteractionEnabled = YES;
-        avatarView3.userInteractionEnabled = YES;
-        avatarView4.userInteractionEnabled = YES;
-        avatarView5.userInteractionEnabled = YES;
-        avatarView6.userInteractionEnabled = YES;
-        avatarView7.userInteractionEnabled = YES;
-        
 
-        
-    }
-    
-    //次の問題表示メソッドへ移行
-    [self selectedQuestionShow];
-    
-}
-
-//問題文の○○さんを決めるメソッド
--(IBAction)clickPlayerImage:(UIImageView*)imageView name:(NSString*)name
-{
-    
-    NSString* nowPlayerStr= [[NSString alloc]initWithFormat:@"問題文の○○さんは、「%@」さんです",name];
-    NSLog(@"%@",nowPlayerStr);
-    nowQuestionPlayer.text = nowPlayerStr;
-    
-    //選ばれたら、選んでくださいラベルは非表示に
-    pleaseSelectPlayerLabel.hidden = YES;
-    
-    //imageViewのタッチイベントも、以降発生しないように設定
-    avatarView1.userInteractionEnabled = NO;
-    avatarView2.userInteractionEnabled = NO;
-    avatarView3.userInteractionEnabled = NO;
-    avatarView4.userInteractionEnabled = NO;
-    avatarView5.userInteractionEnabled = NO;
-    avatarView6.userInteractionEnabled = NO;
-    avatarView7.userInteractionEnabled = NO;
-}
 
 //問題表示メソッド
 -(void)selectedQuestionShow
@@ -1079,11 +1015,6 @@
 //    
 //}
 
-- (void)viewWillDisappear:(BOOL)animated
-{
-    [self.player stop];
-}
-
 -(void)questionTextVoice:(int)ID
 {
     NSString* voiceName;
@@ -1157,5 +1088,71 @@
 
 }
 
+#pragma mark - IBAction
+//labelタッチイベントの中身
+-(IBAction)clickCommand:(UILabel*)label
+{
+    labelTouchYESorNO = YES;
+    NSLog(@"labelのテキストは%@",label.text);
+    CGRect rect = CGRectInset(label.frame,5,5);
+    label.frame = rect;
+    decideQuestionLabel.text = label.text;
+    
+    //タイマーの停止
+    [_timer invalidate];
+    timeLabel.text = @"00";
+    _timer=nil;
+    
+    questionLabel1.userInteractionEnabled = NO;
+    questionLabel2.userInteractionEnabled = NO;
+    questionLabel3.userInteractionEnabled = NO;
+    
+    //もしplayerYESNO問題がYESであれば、「画像を選んでください」labelを表示する
+    if(selected_q_playerFromDatabase == YES){
+        
+        NSURL *voiceURL = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"questionView3" ofType:@"wav"]];
+        _voicePlayer = [[AVAudioPlayer alloc]initWithContentsOfURL:voiceURL error:nil];
+        self.player.numberOfLoops =  0;
+        [self.voicePlayer play];
+        
+        pleaseSelectPlayerLabel.hidden=NO;
+        NSLog(@"player問題はYESだよ");
+        avatarView1.userInteractionEnabled = YES;
+        avatarView2.userInteractionEnabled = YES;
+        avatarView3.userInteractionEnabled = YES;
+        avatarView4.userInteractionEnabled = YES;
+        avatarView5.userInteractionEnabled = YES;
+        avatarView6.userInteractionEnabled = YES;
+        avatarView7.userInteractionEnabled = YES;
+        
+        
+        
+    }
+    
+    //次の問題表示メソッドへ移行
+    [self selectedQuestionShow];
+    
+}
 
-    @end
+//問題文の○○さんを決めるメソッド
+-(IBAction)clickPlayerImage:(UIImageView*)imageView name:(NSString*)name
+{
+    
+    NSString* nowPlayerStr= [[NSString alloc]initWithFormat:@"問題文の○○さんは、「%@」さんです",name];
+    NSLog(@"%@",nowPlayerStr);
+    nowQuestionPlayer.text = nowPlayerStr;
+    
+    //選ばれたら、選んでくださいラベルは非表示に
+    pleaseSelectPlayerLabel.hidden = YES;
+    
+    //imageViewのタッチイベントも、以降発生しないように設定
+    avatarView1.userInteractionEnabled = NO;
+    avatarView2.userInteractionEnabled = NO;
+    avatarView3.userInteractionEnabled = NO;
+    avatarView4.userInteractionEnabled = NO;
+    avatarView5.userInteractionEnabled = NO;
+    avatarView6.userInteractionEnabled = NO;
+    avatarView7.userInteractionEnabled = NO;
+}
+
+@end
