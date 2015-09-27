@@ -112,7 +112,8 @@
 //サウンドオブジェクトの停止
 - (void)stopAudioWithKey:(NSString *)key
 {
-    AVAudioPlayer *
+    AVAudioPlayer *player = [self playerWithKey:key];
+    return [player stop];
 }
 
 //サウンドオブジェクトの音量をフェイドアウトさせて消す
